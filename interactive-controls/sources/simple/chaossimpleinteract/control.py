@@ -14,4 +14,12 @@ def before_activity_control(context: Activity, **kwargs):
     """
     Prompt and wait for any key before an activity is executed.
     """
-    click.pause()
+    print("#####BEFORE#####\n", context)
+    # click.pause()
+
+def after_activity_control(context: Activity, state: Run, **kwargs):
+    """
+    Prompt and wait for any key before an activity is executed.
+    """
+    print("#####AFTER####\n", context, state)
+    # click.pause()

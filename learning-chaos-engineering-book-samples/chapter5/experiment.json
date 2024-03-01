@@ -5,6 +5,15 @@
         "tutorial",
         "filesystem"
     ],
+    "controls": [
+        {
+            "name": "tracing",
+            "provider": {
+                "type": "python",
+                "module": "chaossimpleinteract.control"
+            }
+        }
+    ],
     "steady-state-hypothesis": {
         "title": "The exchange file must exist",
         "probes": [
