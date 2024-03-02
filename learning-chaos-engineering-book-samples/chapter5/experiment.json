@@ -5,6 +5,10 @@
         "tutorial",
         "filesystem"
     ],
+    "configuration": {
+        "original_file_name": "./exchange.dat",
+        "moved_file_name": "./exchange.dat.old"
+    },
     "controls": [
         {
             "name": "tracing",
@@ -38,9 +42,40 @@
                 "func": "rename",
                 "arguments": {
                     "src": "./exchange.dat",
-                    "dst": "./exchange.dat.old"
+                    "dst": "${moved_file_name}"
+                }
+            }
+        },
+        {
+            "name": "delay the method",
+            "type": "action",
+            "provider": {
+                "type": "python",
+                "module": "chaossimpleinteract.sleeper",
+                "func": "sleep",
+                "arguments": {
+                    "seconds": 100
                 }
             }
         }
-    ]
+    ],
+    "rollbacks": [
+        {
+            "name": "remove-old-exchange-file",
+            "type": "action",
+            "provider": {
+                "type": "python",
+                "module": "os",
+                "func": "remove",
+                "arguments": {
+                    "path": "${moved_file_name}"
+                }
+            }
+        }
+    ],
+    "runtime": {
+        "hypothesis": {
+            "strategy": "continuously"
+        }
+    }
 }

@@ -1,0 +1,65 @@
+---
+title: Does our service tolerate the loss of its exchange file?
+description: Our service reads data from an exchange file, can it support that file
+  disappearing?
+tags:
+- tutorial
+- filesystem
+configuration:
+  original_file_name: "./exchange.dat"
+  moved_file_name: "./exchange.dat.old"
+controls:
+- name: tracing
+  provider:
+    type: python
+    module: chaossimpleinteract.control
+steady-state-hypothesis:
+  title: The exchange file must exist
+  probes:
+  - type: probe
+    name: service-is-unavailable
+    tolerance:
+    - 200
+    - 503
+    provider:
+      type: http
+      url: http://localhost:8080/
+method:
+- name: delay the method
+  type: action
+  provider:
+    type: python
+    module: chaossimpleinteract.sleeper
+    func: sleep
+    arguments:
+      seconds: 10
+- name: move-exchange-file
+  type: action
+  provider:
+    type: python
+    module: os
+    func: rename
+    arguments:
+      src: "${original_file_name}"
+      dst: "${moved_file_name}"
+- name: delay the method
+  type: action
+  provider:
+    type: python
+    module: chaossimpleinteract.sleeper
+    func: sleep
+    arguments:
+      seconds: 10
+rollbacks:
+- name: undo-move-exchange-file
+  type: action
+  provider:
+    type: python
+    module: os
+    func: rename
+    arguments:
+      src: "${moved_file_name}"
+      dst: "${original_file_name}"
+runtime:
+  hypothesis:
+    strategy: continuously
